@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHub - Student Productivity Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style/dashboard.css">
+</head>
+<body class="min-h-screen flex">
+
+    <button class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md" id="menuToggle">
+        <i class="fas fa-bars text-indigo-600"></i>
+    </button>
+    <div class="sidebar w-64 bg-white h-screen fixed shadow-lg z-40 flex flex-col">
+        <div class="p-6 flex items-center space-x-3 border-b">
+            <h1 class="text-xl font-bold text-indigo-600">StudyHub</h1>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="index.html" class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-50 text-indigo-700">
+                <i class="fas fa-home w-5 text-center"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="timetable.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-calendar-alt w-5 text-center"></i>
+                <span>Timetable</span>
+            </a>
+            <a href="to-do.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-tasks w-5 text-center"></i>
+                <span>To-Do List</span>
+            </a>
+            <a href="Study Material.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-users w-5 text-center"></i>
+                <span>Study Material</span>
+            </a>
+                        <a href="note.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fa-regular fa-note-sticky"></i>
+                <span>Notes</span>
+            </a>
+        </nav>
+    </div>
+    <div class="flex-1 ml-0 md:ml-64 p-6">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Student Dashboard</h1>
+            <p class="text-gray-600">Welcome back! You have 3 important tasks today.</p>
+        </header>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Today's Classes</p>
+                        <p class="text-2xl font-bold">3</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-indigo-50 text-indigo-600">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Pending Tasks</p>
+                        <p class="text-2xl font-bold">5</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-green-50 text-green-600">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Upcoming Due</p>
+                        <p class="text-2xl font-bold">2</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-yellow-50 text-yellow-600">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Study Rooms</p>
+                        <p class="text-2xl font-bold">4</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-blue-50 text-blue-600">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section id="calendar-section" class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold">Calendar</h2>
+                <button class="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm" id="addTaskBtn">
+                    <i class="fas fa-plus mr-1"></i> Add Event/Exam
+                </button>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-4">
+                <div id="calendarGrid" class="grid grid-cols-7 gap-2 mb-4">
+
+                </div>
+                <div id="calendarEvents" class="space-y-2">
+
+                </div>
+            </div>
+        </section>
+        <div id="calendarModal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
+                <h3 class="text-lg font-bold mb-4">Add Event/Exam</h3>
+                <form id="calendarForm" class="space-y-3">
+                    <input type="text" id="calendarTitle" placeholder="Title" class="w-full p-2 border rounded-lg" required>
+                    <textarea id="calendarDesc" placeholder="Description" class="w-full p-2 border rounded-lg"></textarea>
+                    <input type="date" id="calendarDate" class="w-full p-2 border rounded-lg" required>
+                    <select id="calendarType" class="w-full p-2 border rounded-lg" required>
+                        <option value="event">Event</option>
+                        <option value="exam">Exam</option>
+                    </select>
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" id="calendarCancelBtn" class="px-3 py-1 bg-gray-200 rounded-lg">Cancel</button>
+                        <button id="addeve"type="submit" class="px-3 py-1 bg-indigo-600 text-white rounded-lg">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function getNextTwoDays() {
+            const today = new Date();
+            const days = [];
+            for (let i = 0; i < 2; i++) {
+                const d = new Date(today);
+                d.setDate(today.getDate() + i);
+                days.push({
+                    date: d,
+                    label: d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' }),
+                    weekday: d.toLocaleDateString(undefined, { weekday: 'long' })
+                });
+            }
+            return days;
+        }
+        async function loadTimetable() {
+            try {
+                const res = await fetch('timetable.html');
+                const text = await res.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const table = doc.querySelector('');
+                const days = getNextTwoDays();
+                document.getElementById('day1Header').textContent = days[0].label;
+                document.getElementById('day2Header').textContent = days[1].label;
+                const tbody = document.getElementById('timetableBody');
+                tbody.innerHTML = '';
+                if (!table) {
+                    const sample = [
+                        { time: '09:00 - 10:00', day1: 'Mathematics', day2: 'Physics' },
+                        { time: '10:15 - 11:15', day1: 'English', day2: 'Chemistry' },
+                        { time: '11:30 - 12:30', day1: 'Biology', day2: 'History' }
+                    ];
+                    sample.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td class="px-4 py-2 font-semibold text-gray-700 whitespace-nowrap">${row.time}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">${row.day1}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">${row.day2}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    return;
+                }
+                const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+                const timeIdx = headers.findIndex(h => /time/i.test(h));
+                const dayIdxs = days.map(day =>
+                    headers.findIndex(h => h.toLowerCase().includes(day.weekday.toLowerCase()))
+                );
+                const rows = Array.from(table.querySelectorAll('tbody tr'));
+                rows.forEach(row => {
+                    const cells = Array.from(row.querySelectorAll('td'));
+                    const tr = document.createElement('tr');
+                    const timeCell = document.createElement('td');
+                    timeCell.className = 'px-4 py-2 font-semibold text-gray-700 whitespace-nowrap';
+                    timeCell.textContent = cells[timeIdx]?.textContent || '';
+                    tr.appendChild(timeCell);
+                    dayIdxs.forEach(idx => {
+                        const td = document.createElement('td');
+                        td.className = 'px-4 py-2 whitespace-nowrap';
+                        td.textContent = cells[idx]?.textContent || '-';
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                const days = getNextTwoDays();
+                document.getElementById('day1Header').textContent = days[0].label;
+                document.getElementById('day2Header').textContent = days[1].label;
+                const tbody = document.getElementById('timetableBody');
+                tbody.innerHTML = '';
+                const sample = [
+                    { time: '09:00 - 10:00', day1: 'Mathematics', day2: 'Physics' },
+                    { time: '10:15 - 11:15', day1: 'English', day2: 'Chemistry' },
+                    { time: '11:30 - 12:30', day1: 'Biology', day2: 'History' }
+                ];
+                sample.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-2 font-semibold text-gray-700 whitespace-nowrap">${row.time}</td>
+                        <td class="px-4 py-2 whitespace-nowrap">${row.day1}</td>
+                        <td class="px-4 py-2 whitespace-nowrap">${row.day2}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+        loadTimetable();
+        function showEventsForDate(dateStr) {
+            const eventsDiv = document.getElementById('calendarEvents');
+            eventsDiv.innerHTML = '';
+            const items = calendarItems.filter(item => item.date === dateStr);
+            if (!items.length) {
+                eventsDiv.innerHTML = `<div class="text-gray-400">No events or exams for this date.</div>`;
+                return;
+            }
+            items.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-lg ${item.type === 'exam' ? 'bg-red-100' : 'bg-yellow-100'} border flex flex-col relative`;
+
+                div.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-lg">${item.title}</span>
+                        <div class="flex space-x-2">
+                            <button class="edit-btn text-indigo-600 hover:text-indigo-800" title="Edit" data-index="${calendarItems.indexOf(item)}">den">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="delete-btn text-red-600 hover:text-red-800" title="Delete" data-index="${calendarItems.indexOf(item)}">
+                                <svg aria-hidden="true" data-prefix="fas" data-icon="edit" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-edit fa-w-18 fa-7x"><path fill="currentColor" d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" class=""></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <span class="text-sm text-gray-600 mb-1">${item.desc || ''}</span>
+                    <span class="text-xs text-gray-500">${item.type === 'exam' ? 'Exam' : 'Event'} on ${item.date}</span>
+                `;
+                eventsDiv.appendChild(div);
+            });
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    calendarItems.splice(idx, 1);
+                    saveCalendarItems();
+                    renderCalendarGrid();
+                    showEventsForDate(dateStr);
+                });
+            });
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    const item = calendarItems[idx];
+                    document.getElementById('calendarTitle').value = item.title;
+                    document.getElementById('calendarDesc').value = item.desc;
+                    document.getElementById('calendarDate').value = item.date;
+                    document.getElementById('calendarType').value = item.type;
+                    document.getElementById('calendarModal').classList.remove('hidden');
+                    if (window._editHandler) {
+                        document.getElementById('calendarForm').removeEventListener('submit', window._editHandler);
+                    }
+                    window._editHandler = function(e) {
+                        e.preventDefault();
+                        item.title = document.getElementById('calendarTitle').value.trim();
+                        item.desc = document.getElementById('calendarDesc').value.trim();
+                        item.date = document.getElementById('calendarDate').value;
+                        item.type = document.getElementById('calendarType').value;
+                        saveCalendarItems();
+                        document.getElementById('calendarModal').classList.add('hidden');
+                        renderCalendarGrid();
+                        showEventsForDate(item.date);
+                        document.getElementById('calendarForm').reset();
+                        document.getElementById('calendarForm').removeEventListener('submit', window._editHandler);
+                        window._editHandler = null;
+                    };
+                    document.getElementById('calendarForm').addEventListener('submit', window._editHandler);
+                });
+            });
+        }
+        const savedItems = localStorage.getItem('calendarItems');
+        if (savedItems) {
+            try {
+                calendarItems = JSON.parse(savedItems);
+            } catch (e) {
+                calendarItems = [];
+            }
+        }
+        function saveCalendarItems() {
+            localStorage.setItem('calendarItems', JSON.stringify(calendarItems));
+        }
+        function renderCalendarGrid() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            weekdays.forEach(day => {
+                const div = document.createElement('div');
+                div.className = 'text-center font-bold text-gray-500';
+                div.textContent = day;
+                grid.appendChild(div);
+            });
+            for (let i = 0; i < firstDay; i++) {
+                const div = document.createElement('div');
+                grid.appendChild(div);
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const div = document.createElement('div');
+                div.className = 'relative p-2 rounded-lg border text-center cursor-pointer hover:bg-indigo-50';
+                div.textContent = d;
+                const items = calendarItems.filter(item => item.date === dateStr);
+                if (items.length) {
+                    items.forEach(item => {
+                        const badge = document.createElement('span');
+                        badge.className = `absolute top-1 right-1 w-2 h-2 rounded-full ${item.type === 'exam' ? 'bg-red-500' : 'bg-yellow-400'}`;
+                        div.appendChild(badge);
+                    });
+                }
+                div.addEventListener('click', () => showEventsForDate(dateStr));
+                grid.appendChild(div);
+            }
+        }
+        function showEventsForDate(dateStr) {
+            const eventsDiv = document.getElementById('calendarEvents');
+            eventsDiv.innerHTML = '';
+            const items = calendarItems.filter(item => item.date === dateStr);
+            if (!items.length) {
+                eventsDiv.innerHTML = `<div class="text-gray-400">No events or exams for this date.</div>`;
+                return;
+            }
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-lg ${item.type === 'exam' ? 'bg-red-100' : 'bg-yellow-100'} border flex flex-col`;
+                div.innerHTML = `
+                    <span class="font-bold text-lg">${item.title}</span>
+                    <span class="text-sm text-gray-600 mb-1">${item.desc || ''}</span>
+                    <span class="text-xs text-gray-500">${item.type === 'exam' ? 'Exam' : 'Event'} on ${item.date}</span>
+                `;
+                eventsDiv.appendChild(div);
+            });
+        }
+        document.getElementById('addTaskBtn').addEventListener('click', () => {
+            document.getElementById('calendarModal').classList.remove('hidden');
+        });
+        document.getElementById('calendarCancelBtn').addEventListener('click', () => {
+            document.getElementById('calendarModal').classList.add('hidden');
+        });
+        document.getElementById('calendarForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('calendarTitle').value.trim();
+            const desc = document.getElementById('calendarDesc').value.trim();
+            const date = document.getElementById('calendarDate').value;
+            const type = document.getElementById('calendarType').value;
+            if (title && date && type) {
+                calendarItems.push({title, desc, date, type});
+                saveCalendarItems();
+                document.getElementById('calendarModal').classList.add('hidden');
+                renderCalendarGrid();
+                showEventsForDate(date);
+                this.reset();
+            }
+        });
+        renderCalendarGrid();
+        showEventsForDate(new Date().toISOString().slice(0,10));
+        function renderCalendarGrid() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            weekdays.forEach(day => {
+                const div = document.createElement('div');
+                div.className = 'text-center font-bold text-gray-500';
+                div.textContent = day;
+                grid.appendChild(div);
+            });
+            for (let i = 0; i < firstDay; i++) {
+                const div = document.createElement('div');
+                grid.appendChild(div);
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const div = document.createElement('div');
+                div.className = 'relative p-2 rounded-lg border text-center cursor-pointer hover:bg-indigo-50';
+                div.textContent = d;
+                const items = calendarItems.filter(item => item.date === dateStr);
+                if (items.length) {
+                    items.forEach(item => {
+                        const badge = document.createElement('span');
+                        badge.className = `absolute top-1 right-1 w-2 h-2 rounded-full ${item.type === 'exam' ? 'bg-red-500' : 'bg-yellow-400'}`;
+                        div.appendChild(badge);
+                    });
+                }
+                div.addEventListener('click', () => showEventsForDate(dateStr));
+                grid.appendChild(div);
+            }
+        }
+        document.getElementById('calendarCancelBtn').addEventListener('click', () => {
+            document.getElementById('calendarModal').classList.add('hidden');
+        });
+        document.getElementById('calendarForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('calendarTitle').value.trim();
+            const desc = document.getElementById('calendarDesc').value.trim();
+            const date = document.getElementById('calendarDate').value;
+            const type = document.getElementById('calendarType').value;
+            if (title && date && type) {
+                calendarItems.push({title, desc, date, type});
+                document.getElementById('calendarModal').classList.add('hidden');
+                renderCalendarGrid();
+                showEventsForDate(date);
+                this.reset();
+            }
+        });
+        renderCalendarGrid();
+        showEventsForDate(new Date().toISOString().slice(0,10));
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+        const addClassModal = document.getElementById('addClassModal');
+        const addClassBtn = document.getElementById('addClassBtn');
+        const closeButton = document.querySelector('.close-button');
+        const addClassForm = document.getElementById('addClassForm');
+        const timetableGrid = document.getElementById('timetableGrid');
+        const prevWeekBtn = document.getElementById('prevWeekBtn');
+        const nextWeekBtn = document.getElementById('nextWeekBtn');
+        const classDateInput = document.getElementById('classDate');
+        const dayHeaders = {
+            M: document.getElementById('monHeader'),
+            T: document.getElementById('tueHeader'),
+            W: document.getElementById('wedHeader'),
+            Th: document.getElementById('thuHeader'),
+            F: document.getElementById('friHeader'),
+            Sa: document.getElementById('satHeader'),
+            S: document.getElementById('sunHeader')
+        };
+        if (addClassBtn && addClassModal && classDateInput) {
+            addClassBtn.onclick = function() {
+
+                const mondayOfCurrentWeek = getStartOfWeek(currentWeekStart);
+                classDateInput.value = mondayOfCurrentWeek.toISOString().split('T')[0];
+                addClassModal.style.display = 'flex';
+            }
+        }
+        if (closeButton && addClassModal) {
+            closeButton.onclick = function() {
+                addClassModal.style.display = 'none';
+            }
+        }
+        if (addClassModal) {
+            window.onclick = function(event) {
+                if (event.target == addClassModal) {
+                    addClassModal.style.display = 'none';
+                }
+            }
+        }
+        document.getElementById('addTaskBtn').addEventListener('click', function() {
+            const taskInput = document.getElementById('addTaskBtn');
+            const taskText = taskInput.value.trim();
+            
+            if (taskText) {
+                const taskList = document.getElementById('taskList');
+                const newTask = document.createElement('li');
+                newTask.className = 'task-item flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                newTask.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" class="rounded text-indigo-600">
+                        <span class="font-medium">${taskText}</span>
+                    </div>
+                    <div class="task-actions opacity-0 transition-opacity flex space-x-2">
+                        <button class="text-gray-400 hover:text-indigo-600">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-gray-400 hover:text-red-600">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                taskList.appendChild(newTask);
+                taskInput.value = '';
+                const deleteBtn = newTask.querySelector('.fa-trash').closest('button');
+                deleteBtn.addEventListener('click', function() {
+                    newTask.remove();
+                });
+                const checkbox = newTask.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', function() {
+                    const taskTextEl = newTask.querySelector('.font-medium');
+                    if (this.checked) {
+                        taskTextEl.classList.add('text-gray-400', 'line-through');
+                    } else {
+                        taskTextEl.classList.remove('text-gray-400', 'line-through');
+                    }
+                });
+                newTask.addEventListener('mouseenter', function() {
+                    newTask.querySelector('.task-actions').style.opacity = '1';
+                });
+                newTask.addEventListener('mouseleave', function() {
+                    newTask.querySelector('.task-actions').style.opacity = '0';
+                });
+            }
+        });
+        document.getElementById('addTaskBtn').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('addTaskBtn').click();
+            }
+        });
+        document.getElementById('addeve').addEventListener('click', function(e) {
+            e.preventDefault();
+            const modalOverlay = document.createElement('div');
+            modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50';
+            const modalBox = document.createElement('div');
+            modalBox.className = 'bg-white rounded-xl p-6 w-full max-w-xs shadow-lg flex flex-col items-center';
+            const message = document.createElement('div');
+            message.className = 'mb-4 text-center text-gray-800';
+            message.textContent = 'The event/exam you are adding will be uneditable and can\'t be deleted!';
+            const btnContainer = document.createElement('div');
+            btnContainer.className = 'flex justify-center space-x-4';
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'px-4 py-2 bg-gray-200 rounded-lg';
+            cancelBtn.textContent = 'Cancel';
+            const okBtn = document.createElement('button');
+            okBtn.className = 'px-4 py-2 bg-indigo-600 text-white rounded-lg';
+            okBtn.textContent = 'OK';
+            btnContainer.appendChild(cancelBtn);
+            btnContainer.appendChild(okBtn);
+            modalBox.appendChild(message);
+            modalBox.appendChild(btnContainer);
+            modalOverlay.appendChild(modalBox);
+            document.body.appendChild(modalOverlay);
+            cancelBtn.onclick = function() {
+                document.body.removeChild(modalOverlay);
+            };
+            okBtn.onclick = function() {
+                document.body.removeChild(modalOverlay);
+                document.getElementById('calendarForm').requestSubmit();
+            };
+        });
+    </script>
+</body>
+</html>
+

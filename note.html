@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBuddy - Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style/note.css">
+</head>
+<body class="min-h-screen flex">
+    <button class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md" id="menuToggle">
+        <i class="fas fa-bars text-indigo-600"></i>
+    </button>
+    <div class="sidebar w-64 bg-white h-screen fixed shadow-lg z-40 flex flex-col">
+        <div class="p-6 flex items-center space-x-3 border-b">
+            <h1 class="text-xl font-bold text-indigo-600">StudyHub</h1>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="index.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-home w-5 text-center"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="timetable.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-calendar-alt w-5 text-center"></i>
+                <span>Timetable</span>
+            </a>
+            <a href="to-do.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-tasks w-5 text-center"></i>
+                <span>To-Do List</span>
+            </a>
+            <a href="Study Material.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-users w-5 text-center"></i>
+                <span>Study Material</span>
+            </a>
+            <a href="note.html" class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-50 text-indigo-700">
+                <i class="fa-regular fa-note-sticky"></i>
+                <span>Notes</span>
+            </a>
+        </nav>
+    </div>
+    <div class="flex-1 ml-0 md:ml-64 p-6">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-4xl font-bold text-gray-800">Your Notes</h1>
+                <button id="addNoteBtn" class="btn btn-primary">Add New Note</button>
+            </div>
+            <div id="notesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </div>
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal-content">
+                <button class="close-button" id="closeModalBtn">&times;</button>
+                <h2 class="text-2xl font-semibold mb-4">Add/Edit Note</h2>
+                <form id="noteForm">
+                    <div class="mb-4 flex space-x-4">
+                        <div class="flex-1">
+                            <label for="subjectName" class="block text-sm font-medium text-gray-700 mb-1">Subject Name</label>
+                            <input type="text" id="subjectName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        </div>
+                        <div class="flex-1">
+                            <label for="chapterNumber" class="block text-sm font-medium text-gray-700 mb-1">Chapter Number</label>
+                            <input type="text" id="chapterNumber" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="topicName" class="block text-sm font-medium text-gray-700 mb-1">Topic Name</label>
+                        <input type="text" id="topicName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="noteContent" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                        <textarea id="noteContent" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="btn btn-primary">Save Note</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const noteForm = document.getElementById('noteForm');
+        const notesList = document.getElementById('notesList');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const addNoteBtn = document.getElementById('addNoteBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        let editingIndex = null;
+        function renderNotes() {
+            notesList.innerHTML = '';
+            notes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note-item rounded-lg p-4 note-item';
+                noteElement.innerHTML = `
+                    <h3 class="font-medium text-lg text-gray-800">${note.subjectName} - Chapter ${note.chapterNumber}: ${note.topicName}</h3>
+                    <p class="text-gray-600 mt-1">${note.content}</p>
+                    <div class="flex justify-end mt-2 space-x-2">
+                        <button class="btn btn-success edit-note" data-index="${index}">Edit</button>
+                        <button class="btn btn-danger delete-note" data-index="${index}">Delete</button>
+                    </div>
+                `;
+                notesList.appendChild(noteElement);
+            });
+            document.querySelectorAll('.edit-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    editNote(index);
+                });
+            });
+            document.querySelectorAll('.delete-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    deleteNote(index);
+                });
+            });
+        }
+        function saveNotes() {
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+        noteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const subjectName = document.getElementById('subjectName').value.trim();
+            const chapterNumber = document.getElementById('chapterNumber').value.trim();
+            const topicName = document.getElementById('topicName').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+            if (subjectName && chapterNumber && topicName && content) {
+                if (editingIndex !== null) {
+                    notes[editingIndex] = { subjectName, chapterNumber, topicName, content };
+                    editingIndex = null;
+                } else {
+                    notes.push({ subjectName, chapterNumber, topicName, content });
+                }
+                saveNotes();
+                renderNotes();
+                noteForm.reset();
+                modalOverlay.style.display = 'none';
+            }
+        });
+        function editNote(index) {
+            const note = notes[index];
+            document.getElementById('subjectName').value = note.subjectName;
+            document.getElementById('chapterNumber').value = note.chapterNumber;
+            document.getElementById('topicName').value = note.topicName;
+            document.getElementById('noteContent').value = note.content;
+            editingIndex = index;
+            modalOverlay.style.display = 'flex';
+        }
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            saveNotes();
+            renderNotes();
+        }
+        addNoteBtn.addEventListener('click', function() {
+            noteForm.reset();
+            editingIndex = null;
+            modalOverlay.style.display = 'flex';
+        });
+        closeModalBtn.addEventListener('click', function() {
+            modalOverlay.style.display = 'none';
+        });
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                modalOverlay.style.display = 'none';
+            }
+        });
+        renderNotes();
+        function renderNotes() {
+            notesList.innerHTML = '';
+            const sortedNotes = [...notes].sort((a, b) => {
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                return 0;
+            });
+            sortedNotes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                let classes = 'note-item rounded-lg p-4 note-item';
+                if (note.important) classes += ' important';
+                if (note.pinned) classes += ' pinned';
+                noteElement.className = classes;
+                noteElement.innerHTML = `
+                    <div class="note-icons">
+                        <button class="icon-btn ${note.important ? 'important' : ''} mark-important" title="${note.important ? 'Unmark Important' : 'Mark Important'}" data-index="${index}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17.75l-6.16 3.24 1.18-6.88L2 9.51l6.92-1.01L12 2.75l3.08 5.75L22 9.51l-5.02 4.6 1.18 6.88z"/></svg>
+                        </button>
+                        <button class="icon-btn ${note.pinned ? 'pinned' : ''} pin-note" title="${note.pinned ? 'Unpin' : 'Pin'}" data-index="${index}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M16 3a1 1 0 0 1 1 1v7.59l2.3 2.3a1 1 0 0 1-1.42 1.42l-2.3-2.3V21a1 1 0 0 1-2 0v-7.59l-2.3 2.3a1 1 0 0 1-1.42-1.42l2.3-2.3V4a1 1 0 0 1 1-1h2z"/></svg>
+                        </button>
+                    </div>
+                    <h3 class="font-medium text-lg text-gray-800">${note.subjectName} - Chapter ${note.chapterNumber}: ${note.topicName}</h3>
+                    <p class="text-gray-600 mt-1">${note.content}</p>
+                    <div class="flex justify-end mt-2 space-x-2 flex-wrap">
+                        <button class="btn btn-success edit-note" data-index="${index}">Edit</button>
+                        <button class="btn btn-danger delete-note" data-index="${index}">Delete</button>
+                    </div>
+                `;
+                notesList.appendChild(noteElement);
+            });
+            document.querySelectorAll('.mark-important').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    toggleImportant(index);
+                });
+            });
+            document.querySelectorAll('.pin-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    togglePin(index);
+                });
+            });
+            document.querySelectorAll('.edit-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    editNote(index);
+                });
+            });
+            document.querySelectorAll('.delete-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    deleteNote(index);
+                });
+            });
+        }
+        function renderNotes() {
+            notesList.innerHTML = '';
+            const sortedNotes = [...notes].sort((a, b) => {
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                return 0;
+            });
+            sortedNotes.forEach((note, index) => {
+                const noteElement = document.createElement('div');
+                let classes = 'note-item rounded-lg p-4 note-item';
+                if (note.important) classes += ' important';
+                if (note.pinned) classes += ' pinned';
+                noteElement.className = classes;
+                noteElement.innerHTML = `
+                    <div class="note-icons">
+                        <button class="icon-btn ${note.important ? 'important' : ''} mark-important" title="${note.important ? 'Unmark Important' : 'Mark Important'}" data-index="${index}">
+                            <i class="fas fa-thumbtack"></i>
+                        </button>
+                        <button class="icon-btn ${note.pinned ? 'pinned' : ''} pin-note" title="${note.pinned ? 'Unpin' : 'Pin'}" data-index="${index}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M16 3a1 1 0 0 1 1 1v7.59l2.3 2.3a1 1 0 0 1-1.42 1.42l-2.3-2.3V21a1 1 0 0 1-2 0v-7.59l-2.3 2.3a1 1 0 0 1-1.42-1.42l2.3-2.3V4a1 1 0 0 1 1-1h2z"/></svg>
+                        </button>
+                    </div>
+                    <h3 class="font-medium text-lg text-gray-800">${note.subjectName} - Chapter ${note.chapterNumber}: ${note.topicName}</h3>
+                    <p class="text-gray-600 mt-1">${note.content}</p>
+                    <div class="flex justify-end mt-2 space-x-2 flex-wrap">
+                        <button class="btn btn-success edit-note" data-index="${index}">Edit</button>
+                        <button class="btn btn-danger delete-note" data-index="${index}">Delete</button>
+                    </div>
+                `;
+                notesList.appendChild(noteElement);
+            });
+            document.querySelectorAll('.mark-important').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    toggleImportant(index);
+                });
+            });
+            document.querySelectorAll('.pin-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    togglePin(index);
+                });
+            });
+            document.querySelectorAll('.edit-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    editNote(index);
+                });
+            });
+            document.querySelectorAll('.delete-note').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    deleteNote(index);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

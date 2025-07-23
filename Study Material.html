@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book PDF Downloads</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style/Study Material.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style/dashboard.css">
+</head>
+<body>
+    <button class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md" id="menuToggle">
+        <i class="fas fa-bars text-indigo-600"></i>
+    </button>
+    <div class="sidebar w-64 bg-white h-screen fixed shadow-lg z-40 flex flex-col">
+        <div class="p-6 flex items-center space-x-3 border-b">
+            <h1 class="text-xl font-bold text-indigo-600">StudyHub</h1>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="index.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-home w-5 text-center"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="timetable.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-calendar-alt w-5 text-center"></i>
+                <span>Timetable</span>
+            </a>
+            <a href="to-do.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fas fa-tasks w-5 text-center"></i>
+                <span>To-Do List</span>
+            </a>
+            <a href="Study Material.html" class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-50 text-indigo-700">
+                <i class="fas fa-users w-5 text-center"></i>
+                <span>Study Material</span>
+            </a>
+            <a href="note.html" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+                <i class="fa-regular fa-note-sticky"></i>
+                <span>Notes</span>
+            </a>
+        </nav>
+    </div>
+    <div class="flex-1 ml-0 md:ml-64 p-6">
+        <div class="container">
+            
+            <h1>Download Book PDFs</h1>
+            <div class="filters">
+                <label>
+                    Class:
+                    <select id="classFilter">
+                        <option value="">All</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </label>
+                <label>
+                    Subject:
+                    <select id="subjectFilter">
+                        <option value="">All</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">EVS</option>
+                        <option value="English">English</option>
+                        <option value="History">Hindi</option>
+                    </select>
+                </label>
+                <label>
+                    type:
+                    <select id="tyfil">
+                        <option value="">All</option>
+                        <option value="Book">Book</option>
+                        <option value="Solution">Solution</option>
+                    </select>
+                </label>
+                <label>
+                    language:
+                    <select id="language">
+                        <option value="">All</option>
+                        <option value="Book">Hindi</option>
+                        <option value="Solution">English</option>
+                    </select>
+                </label>
+            </div>
+            <table id="bktbl">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Type</th>
+                        <th>language</th>
+                        <th>Download</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Book rows will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        const Books = [
+            { title: "Maths", class: "1", subject: "Math", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1QImR7LjiLA1IkSHDa2QiCGNNemEVCu78&export=download&authuser=0" },
+            { title: "Maths", class: "1", subject: "Math", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1o0wzu5C_MuzeSgT7xqzeN5_0z9KmvI5m&export=download&authuser=0" },
+            { title: "English", class: "1", subject: "English", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1o6qai-xMlThsLVpZMe3a166As0F-xq7E&export=download&authuser=0&confirm=t&uuid=29865203-087a-4ad8-8824-bfcb999482d2&at=AN8xHopeVYu1EDmFIXnMkadTdxm-%3A1753285086540" },
+            { title: "English", class: "1", subject: "English", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1PIBW_0iapDv7ylFr8mzSotsHB-_Gylfo&export=download&authuser=0&confirm=t&uuid=74451585-e664-48d5-b9ea-a4cb2481d207&at=AN8xHoqFoqzHw2b2ykNGU1dHrruX%3A1753285041184" },
+            { title: "Hindi", class: "1", subject: "Hindi", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1RL9-mBFya81iaaxKte-0xE5xzBSD3YUT&export=download&authuser=0&confirm=t&uuid=6f0919ed-3f29-45d0-b75a-ba49d6246eaa&at=AN8xHooFEgOtwuxdB0GaVCHHg8p4%3A1753285160130" },
+            { title: "Maths", class: "2", subject: "Maths", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1mCw0zw-1V5eU2zcgLIjPT_wkstTvB_Xm&export=download&authuser=0&confirm=t&uuid=dcc0ffe8-0b4c-4034-8844-62c368984440&at=AN8xHooH7yhbJZ4MMhje3jiEEriC%3A1753285267267" },
+            { title: "Maths", class: "2", subject: "Maths", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1zTb6z7lQ_igwpgnL-gfkMKLcc4hSeGnZ&export=download&authuser=0&confirm=t&uuid=e26766ce-e58b-47cc-ae44-3d134c7b8bfc&at=AN8xHoocWfE8glqZqRjWemkeIcrF%3A1753285283525" },
+            { title: "English", class: "2", subject: "English", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1ep2MckVxCteMF5RdzNkXA7yVR0QaTXG2&export=download&authuser=0&confirm=t&uuid=35c2b6f6-5a73-4a8b-9afa-a1183c5df7be&at=AN8xHophwTOa2djkUuK4D4xhpwVK%3A1753285217702" },
+            { title: "English", class: "2", subject: "English", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1NGpMPz-T-fOwq_ZvUbYZTfb8x0O3AB62&export=download&authuser=0&confirm=t&uuid=642e757b-0bb1-4663-9fc4-03501f923c43&at=AN8xHoqsaCWuU9NXAFtogzc35umj%3A1753285187701" },
+            { title: "Hindi", class: "2", subject: "Hindi", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1yXnuBxJxvdRQgELnIQbeNgSf72nHUxMT&export=download&authuser=0" },
+            { title: "Maths", class: "3", subject: "Maths", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1LcWL5VILftUo7g09mDfaMPlyFO0E5tsb&export=download&authuser=0" },
+            { title: "Maths", class: "3", subject: "Maths", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1CzzPTclic3BAvmV5uiy1cww6a3C_e8mh&export=download&authuser=0" },
+            { title: "English", class: "3", subject: "English", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1jyMFkK9KC-dMwHCOAKXIq_j4fh4KF9hJ&export=download&authuser=0" },
+            { title: "Hindi", class: "3", subject: "Hindi", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=17FSetDcjaioFgb27pfwiS4L-I3v3S1Aq&export=download&authuser=0" },
+            { title: "EVS", class: "3", subject: "EVS", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=17P7VTDeIqxB86FYqn40USnFgPJ_wcHt1&export=download&authuser=0" },
+            { title: "EVS", class: "3", subject: "EVS", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1cm8rHIS6L0duNoUhvTABNRVeo4swQEp_&export=download&authuser=0" },
+            { title: "Maths", class: "4", subject: "Maths", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1BsWcRH3_0v7p_re-tkzwO-jY_wq4gqNz&export=download&authuser=0&confirm=t&uuid=40fa287f-3f8f-4648-b315-60e51c07e871&at=AN8xHooC_YQGrik11piXoiDgjfvr%3A1753285583752" },
+            { title: "Maths", class: "4", subject: "Maths", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1STP0f9x23cQH5X3uI6ZZJbccgMj8MjYz&export=download&authuser=0&confirm=t&uuid=222a003d-158a-4d35-9278-72b59b234e62&at=AN8xHor5kxRJLbYWbnE4ROVnPiiu%3A1753285601642" },
+            { title: "English", class: "4", subject: "English", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1YH49hQ-s1yZ6KlANp70AvJ_tFrvNamMN&export=download&authuser=0&confirm=t&uuid=61cc9d39-2ff4-4b67-976b-6818a2cab943&at=AN8xHoqgGnaKrUvZOizzHbdV59xs%3A1753285542915" },
+            { title: "Hindi", class: "4", subject: "Hindi", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1GL1pc0Ok-z0rEVu-m37BM47Klco2qXmW&export=download&authuser=0" },
+            { title: "EVS", class: "4", subject: "EVS", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1LsH3gawJgq0WUrp-6Pdu2mTQHbG4uYal&export=download&authuser=0" },
+            { title: "EVS", class: "4", subject: "EVS", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1nvC48F5AhQNagi8Y33waa2YT8hBwizbL&export=download&authuser=0" },
+            { title: "Maths", class: "5", subject: "Maths", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1sChaVfhLCk19XqnYMXsuJrlZp47WUjhK&export=download&authuser=0&confirm=t&uuid=89bd800b-57eb-4db5-aca5-3bf942213f6c&at=AN8xHoqFqKlZ9Rusfswd2Va44glc%3A1753285720277" },
+            { title: "Maths", class: "5", subject: "Maths", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1jCoeD-YCALSmAkRsVrvMQbNJYNbWO8_F&export=download&authuser=0&confirm=t&uuid=00024c77-00bd-4f22-a4db-4786719adf8b&at=AN8xHop6AEXEh2hn-vK-BgrjsPgS%3A1753285741627" },
+            { title: "English", class: "5", subject: "English", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1dFzkbohvNtcvedkVjuQNbGpCfzVP7R0g&export=download&authuser=0&confirm=t&uuid=0d904b47-a74d-49bf-b004-8ba9a3d4113c&at=AN8xHoro0EjSwqn5PnA7PJW5rItP%3A1753285686525" },
+            { title: "Hindi", class: "5", subject: "Hindi", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1DezaX8SEw9KoFwr5_APb7VzzPQWFX5bw&export=download&authuser=0" },
+            { title: "EVS", class: "5", subject: "EVS", type: "Book",language: "English", url: "https://drive.usercontent.google.com/download?id=1X_oFn5N8BxK6oRg75apjg1FGwTNiDU2b&export=download&authuser=0" },
+            { title: "EVS", class: "5", subject: "EVS", type: "Book",language: "Hindi", url: "https://drive.usercontent.google.com/download?id=1azAQwqExJXSis4URhA_VBm27BEiJjPlW&export=download&authuser=0" },
+        ];
+        function renderBooks() {
+            const classVal = document.getElementById('classFilter').value;
+            const subjectVal = document.getElementById('subjectFilter').value;
+            const typeVal = document.getElementById('tyfil').value;
+            const languageVal = document.getElementById('language').value;
+            const tbody = document.querySelector('#bktbl tbody');
+            tbody.innerHTML = '';
+            const filtered = Books.filter(Book =>
+                (classVal === "" || Book.class === classVal) &&
+                (subjectVal === "" || Book.subject === subjectVal) &&
+                (typeVal === "" || Book.type === typeVal) &&
+                (languageVal === "" || Book.language === languageVal)
+            );
+            if (filtered.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="5" style="text-align:center;color:#888;">No Books found.</td>`;
+                tbody.appendChild(row);
+                return;
+            }
+            filtered.forEach(Book => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${Book.title}</td>
+                    <td>${Book.class}</td>
+                    <td>${Book.subject}</td>
+                    <td>${Book.type}</td>
+                    <td>${Book.language}</td>
+                    <td><a href="${Book.url}" download>Download</a></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        document.getElementById('classFilter').addEventListener('change', renderBooks);
+        document.getElementById('subjectFilter').addEventListener('change', renderBooks);
+        document.getElementById('tyfil').addEventListener('change', renderBooks);
+        renderBooks();
+    </script>
+</body>
+</html>

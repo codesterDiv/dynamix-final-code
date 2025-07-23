@@ -1,0 +1,8 @@
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+.bg-indigo-600 { background-color: var(--primary) !important; }
+.text-indigo-600 { color: var(--primary) !important; }
+/* Add more classes as needed to use the variables */

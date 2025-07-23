@@ -1,0 +1,95 @@
+
+:root {
+    --primary: #4f46e5;
+    --secondary: #10b981;
+    --accent: #f59e0b;
+    --dark: #1e293b;
+    --light: #f8fafc;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.sidebar {
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.active {
+        transform: translateX(0);
+    }
+}
+
+.time-block {
+    transition: all 0.2s ease;
+}
+
+.time-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.task-item:hover .task-actions {
+    opacity: 1;
+}
+
+.reminder-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+
+/* Goals Section Styles */
+#goals-section {
+    background: #f8fafc;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px 0 rgba(99,102,241,0.08);
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+}
+#goals-section h2 {
+    color: #4338ca;
+    letter-spacing: 0.01em;
+}
+#goalsList li {
+    transition: background 0.2s;
+}
+#goalsList li:hover {
+    background: #e0e7ff;
+}
+#goalModal {
+    background: rgba(30, 41, 59, 0.25);
+}
+#goalModal .bg-white {
+    border: 1px solid #e0e7ef;
+}
+#goalForm input,
+#goalForm button {
+    outline: none;
+}
+#goalForm input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 1.5px #6366f1;
+}
+#addGoalBtn {
+    box-shadow: 0 1px 2px 0 rgba(99,102,241,0.10);
+    transition: background 0.2s;
+}
+#addGoalBtn:hover {
+    background: #4f46e5;
+}
